@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر شحن العاب (ahmed ehab)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --bg-color: #0b132b;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --accent-hover: #0284c7;
+            --whatsapp: #25D366;
+            --whatsapp-hover: #1ebe57;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.12) 0%, transparent 60%), radial-gradient(circle at 100% 100%, rgba(30, 41, 59, 0.5) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+        /* الهيدر */
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 8%;
+            background: rgba(11, 19, 43, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 1px;
+            text-shadow: 0 0 12px var(--accent-glow);
+        }
+        
+        .cart-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 10px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cart-btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+        
+        .cart-badge {
+            background: var(--accent);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        /* الحاوية الرئيسية */
+        
+        .container {
+            padding: 50px 8%;
+            max-width: 1300px;
+            margin: auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+        
+        .section-header h1 {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .section-header p {
+            color: var(--text-sub);
+            font-size: 15px;
+        }
+        /* شبكة الألعاب */
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+        
+        .game-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 25px 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px var(--accent-glow);
+        }
+        
+        .game-card h3 {
+            font-size: 19px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .game-card p {
+            color: var(--text-sub);
+            font-size: 14px;
+        }
+        /* النوافذ المنبثقة (Modals) */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: #152238;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 480px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 26px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .close-btn:hover {
+            color: #fff;
+        }
+        /* قائمة الباقات */
+        
+        .packages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-left: 5px;
+        }
+        
+        .package-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            transition: all 0.25s ease;
+        }
+        
+        .package-item:hover {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.05);
+        }
+        
+        .pkg-title {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 3px;
+        }
+        
+        .pkg-price {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .add-btn {
+            background: var(--accent);
+            color: #0b132b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .add-btn:hover {
+            background: var(--accent-hover);
+            color: #fff;
+            transform: scale(1.03);
+        }
+        /* السلة */
+        
+        .cart-total {
+            margin-top: 22px;
+            padding-top: 15px;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            background: var(--whatsapp);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkout-btn:hover {
+            background: var(--whatsapp-hover);
+            box-shadow: 0 0 18px rgba(37, 211, 102, 0.3);
+        }
+        
+        .empty-cart-msg {
+            text-align: center;
+            color: var(--text-sub);
+            padding: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">متجر شحن العاب</div>
+        <button class="cart-btn" onclick="openCartModal()">
+            <span>السلة</span>
+            <span class="cart-badge" id="cart-count">0</span>
+        </button>
+    </header>
+
+    <div class="container">
+        <div class="section-header">
+            <h1>اختر اللعبة</h1>
+            <p>اختر الباقة المناسبة لك</p>
+        </div>
+        <div class="games-grid" id="games-container"></div>
+    </div>
+
+    <!-- نافذة الباقات -->
+    <div class="modal" id="packages-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-game-title">اختيار الباقة</h2>
+                <button class="close-btn" onclick="closeModal('packages-modal')">&times;</button>
+            </div>
+            <div class="packages-list" id="packages-list"></div>
+        </div>
+    </div>
+
+    <!-- نافذة السلة -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>سلة المشتريات</h2>
+                <button class="close-btn" onclick="closeModal('cart-modal')">&times;</button>
+            </div>
+            <div class="packages-list" id="cart-items-list"></div>
+            <div class="cart-total">
+                <span>المجموع:</span>
+                <span id="cart-total-price" style="color: var(--accent);">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="sendToWhatsApp()">
+                إتمام الطلب عبر واتساب
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. ضع رقم الواتساب الخاص بك هنا (بدون علامة +)
+        // ==========================================
+        const myWhatsappNumber = "201121347052";
+
+        // ==========================================
+        // 2. بيانات الألعاب والباقات بالأسعار الرسمية ($)
+        // ==========================================
+        const gamesData = [{
+            id: 'pubg',
+            name: 'ببجي موبايل (PUBG)',
+            packages: [{
+                name: '30 UC',
+                price: 30.00
+            }, {
+                name: '60 UC',
+                price: 60.00
+            }, {
+                name: '325 UC',
+                price: 260.00
+            }, {
+                name: '660 UC',
+                price: 520.00
+            }, {
+                name: '1800 UC',
+                price: 1280.00
+            }, {
+                name: '3850 UC',
+                price: 2550.00
+            }]
+        }, {
+            id: 'pes',
+            name: 'بيس (eFootball)',
+            packages: [{
+                name: '130 Coins',
+                price: 70.00
+            }, {
+                name: '300 Coins',
+                price: 160.00
+            }, {
+                name: '520 Coins',
+                price: 280.00
+            }, {
+                name: '1040 Coins',
+                price: 500.00
+            }, {
+                name: '2130 Coins',
+                price: 980.00
+            }, {
+                name: '3250 Coins',
+                price: 1450.00
+            }]
+        }, {
+            id: 'freefire',
+            name: 'فري فاير (Free Fire)',
+            packages: [{
+                name: '50 جوهرة',
+                price: 30.00
+            }, {
+                name: '100 جوهرة',
+                price: 60.00
+            }, {
+                name: '210 جوهرة',
+                price: 110.00
+            }, {
+                name: '310 جوهرة',
+                price: 170.00
+            }, {
+                name: '520 جوهرة',
+                price: 270.00
+            }, {
+                name: '1060 جوهرة',
+                price: 530.00
+            }, {
+                name: '2180 جوهرة',
+                price: 1050.00
+            }]
+        }, {
+            id: 'fifa',
+            name: 'فيفا موبايل (FC Mobile)',
+            packages: [{
+                name: '50 FC Points',
+                price: 25.00
+            }, {
+                name: '100 FC Points',
+                price: 55.00
+            }, {
+                name: '500 FC Points',
+                price: 270.00
+            }, {
+                name: '1050 FC Points',
+                price: 530.00
+            }, {
+                name: '2200 FC Points',
+                price: 1040.00
+            }, {
+                name: '5700 FC Points',
+                price: 2550.00
+            }]
+        }, {
+            id: 'cod',
+            name: 'كول اوف ديوتي (CODM)',
+            packages: [{
+                name: '80 CP',
+                price: 55.00
+            }, {
+                name: '420 CP',
+                price: 270.00
+            }, {
+                name: '880 CP',
+                price: 530.00
+            }, {
+                name: '2400 CP',
+                price: 1290.00
+            }, {
+                name: '5000 CP',
+                price: 2550.00
+            }]
+        }, {
+            id: 'valorant',
+            name: 'فالورانت (Valorant)',
+            packages: [{
+                name: '475 VP',
+                price: 260.00
+            }, {
+                name: '1000 VP',
+                price: 500.00
+            }, {
+                name: '2050 VP',
+                price: 1000.00
+            }, {
+                name: '3650 VP',
+                price: 1730.00
+            }, {
+                name: '5350 VP',
+                price: 2450.00
+            }]
+        }];
+
+        let cart = [];
+
+        // عرض الألعاب في الصفحة
+        const gamesContainer = document.getElementById('games-container');
+        gamesData.forEach(game => {
+            const card = document.createElement('div');
+            card.className = 'game-card';
+            card.innerHTML = `
+                <h3>${game.name}</h3>
+                <p>تصفح الباقات الرسمية</p>
+            `;
+            card.onclick = () => openGameModal(game);
+            gamesContainer.appendChild(card);
+        });
+
+        // فتح نافذة اختيار الباقة
+        function openGameModal(game) {
+            document.getElementById('modal-game-title').innerText = game.name;
+            const packagesList = document.getElementById('packages-list');
+            packagesList.innerHTML = '';
+
+            game.packages.forEach(pkg => {
+                const item = document.createElement('div');
+                item.className = 'package-item';
+                item.innerHTML = `
+                    <div>
+                        <div class="pkg-title">${pkg.name}</div>
+                        <div class="pkg-price">$${pkg.price.toFixed(2)}</div>
+                    </div>
+                    <button class="add-btn" onclick="addToCart('${game.name}', '${pkg.name}', ${pkg.price})">إضافة</button>
+                `;
+                packagesList.appendChild(item);
+            });
+
+            openModal('packages-modal');
+        }
+
+        // إضافة حزمة للسلة
+        function addToCart(gameName, packageName, price) {
+            cart.push({
+                game: gameName,
+                package: packageName,
+                price: price
+            });
+            updateCartCount();
+            closeModal('packages-modal');
+        }
+
+        // تحديث عداد السلة
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        // فتح نافذة السلة
+        function openCartModal() {
+            const cartItemsList = document.getElementById('cart-items-list');
+            cartItemsList.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsList.innerHTML = '<div class="empty-cart-msg">السلة فارغة حالياً</div>';
+            } else {
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    const el = document.createElement('div');
+                    el.className = 'package-item';
+                    el.innerHTML = `
+                        <div>
+                            <div class="pkg-title">${item.game}</div>
+                            <div class="pkg-price" style="color:#f1f5f9">${item.package} - $${item.price.toFixed(2)}</div>
+                        </div>
+                        <button class="close-btn" style="font-size:18px" onclick="removeFromCart(${index})">&times;</button>
+                    `;
+                    cartItemsList.appendChild(el);
+                });
+            }
+
+            document.getElementById('cart-total-price').innerText = `$${total.toFixed(2)}`;
+            openModal('cart-modal');
+        }
+
+        // حذف عنصر من السلة
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartCount();
+            openCartModal();
+        }
+
+        // تحويل الطلب إلى واتساب
+        function sendToWhatsApp() {
+            if (cart.length === 0) {
+                alert('السلة فارغة!');
+                return;
+            }
+
+            let message = "مرحباً، أريد طلب شحن الألعاب التالية:\n\n";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                message += `${index + 1}. ${item.game} - ${item.package} ($${item.price.toFixed(2)})\n`;
+                total += item.price;
+            });
+
+            message += `\n*الإجمالي المطلوب: $${total.toFixed(2)}*`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${myWhatsappNumber}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // إغلاق وفتح النوافذ
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // إغلاق النافذة عند النقر خارجها
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+
+</html>
